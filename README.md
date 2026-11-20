@@ -3,7 +3,8 @@ A Pomodoro timer that **looks back at you**.
 focus_buddy turns a 128×64 OLED into a pair of expressive robot eyes that change
 with every phase of the Pomodoro technique. Built on an ESP32 with the FluxGarage RoboEyes library, it doubles as a
 minimal desk companion.
-
+## DEMO
+https://drive.google.com/file/d/1hphBUBG85Bz2jmnikuV8uQpTLheFCjiw/view?usp=drive_link
 ## Features
 
 - **25 / 5 / 15 Pomodoro cycle** with automatic long break every 4 focus sessions

@@ -9,9 +9,18 @@ const int BUTTON = 27, LED = 25, BUZZER = 26;
 
 class BufferedOLED : public Adafruit_SH1106G {
 public:
+  int16_t yShift = 0;
   BufferedOLED() : Adafruit_SH1106G(128, 64, &Wire, -1) {}
-  void display() override {}                 
-  void flush() { Adafruit_SH1106G::display(); } 
+  void display() override {}
+  void flush() { Adafruit_SH1106G::display(); }
+
+  void fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t c) {
+    Adafruit_SH1106G::fillRoundRect(x, y + yShift, w, h, r, c);
+  }
+  void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
+                    int16_t x2, int16_t y2, uint16_t c) {
+    Adafruit_SH1106G::fillTriangle(x0, y0 + yShift, x1, y1 + yShift, x2, y2 + yShift, c);
+  }
 };
 
 BufferedOLED oled;
@@ -46,10 +55,10 @@ if (oldPhase != phase) {
   oldPhase = phase;
   
   if (phase == FOCUS) {
-    eyes.setMood(HAPPY);
+    eyes.setMood(DEFAULT);
     eyes.setHeight(16, 16);
     eyes.setAutoblinker(true, 3, 3);
-    eyes.setIdleMode(false, 0, 0);
+    eyes.setIdleMode(true,1,2);
     eyes.setHFlicker(true, 0);      
     eyes.setVFlicker(false, 0);
     eyes.setCuriosity(true);
@@ -57,10 +66,10 @@ if (oldPhase != phase) {
     eyes.blink();                    
   }
   else if (phase == SHORT) {
-    eyes.setMood(DEFAULT);
+    eyes.setMood(HAPPY);
     eyes.setHeight(24, 24);
     eyes.setAutoblinker(true, 5, 3);
-    eyes.setIdleMode(true, 1, 2);
+    eyes.setIdleMode(false,0,0);
     eyes.setHFlicker(false, 0);
     eyes.setVFlicker(false, 0);
     eyes.setCuriosity(true);         
@@ -84,7 +93,9 @@ if (oldPhase != phase) {
   if (pulse && !previousPulse) eyes.blink();
   previousPulse = pulse;
 
+  oled.yShift = 9;
   eyes.update();
+  oled.yShift = 0;
 
   oled.fillRect(0, 0, 128, 9, SH110X_BLACK);
   oled.fillRect(0, 48, 128, 16, SH110X_BLACK);
@@ -127,7 +138,8 @@ void setup() {
   if (!screenOK) screenOK = oled.begin(0x3D, true);
 
   if (screenOK) {
-    eyes.begin(128, 48, 30);       
+    eyes.begin(128, 39, 30);  
+  
     eyes.setWidth(28, 28);
     eyes.setSpacebetween(26);
     eyes.setBorderradius(5, 5);
